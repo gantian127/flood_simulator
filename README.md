@@ -15,5 +15,5 @@ fs.run()
 ```
 Method 2: use command
 ```
-$ python overland_flow.py config_file.toml
+$ python flood_simulator.py config_file.toml
 ```
