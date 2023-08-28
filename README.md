@@ -1,7 +1,9 @@
 # Flood Simulator
 
-This repository includes a Flood Simulator which uses the Landlab Overlandflow component to simulate the overland flow
-process for a given study area. Example input and output files are provided.
+This repository includes a Flood Simulator which uses the  
+[Overlandflow component](https://landlab.readthedocs.io/en/master/user_guide/overland_flow_user_guide.html) 
+from [Landlab](https://landlab.readthedocs.io/en/master/)to simulate the overland flow process for 
+a given study area. Example input and output files are provided.
 
 ### Run Flood Simulator
 Method 1: use Python
