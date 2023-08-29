@@ -85,7 +85,7 @@ class FloodSimulator:
         model_run_time = self.run_params['model_run_time'] * 60  # duration of run (s)
         storm_duration = self.run_params['storm_duration'] * 60  # duration of rain (s)
         time_step = self.run_params['time_step'] * 60  #
-        rainfall_intensity = 59.2 / (1000 * 3600)  # mm/hr to m/s
+        rainfall_intensity = self.run_params['rain_intensity'] / (1000 * 3600)  # mm/hr to m/s
         elapsed_time = 0.0
 
         # output setup
