@@ -60,10 +60,17 @@ class FloodSimulator:
 
         # topographic elevation and set boundary condition
         self.model_grid, dem_data = read_esri_ascii(self.input_params['grid_file'], name='topographic__elevation')
-        self.outlet_id = self.model_grid.set_watershed_boundary_condition(
-                                dem_data,
-                                nodata_value=self.input_params['nodata_value'],
-                                return_outlet_id=True)
+
+        if self.input_params['outlet_id'] < 0:
+            self.outlet_id = self.model_grid.set_watershed_boundary_condition(
+                                    dem_data,
+                                    nodata_value=self.input_params['nodata_value'],
+                                    return_outlet_id=True)
+        else:
+            self.model_grid.set_watershed_boundary_condition_outlet_id(
+                                    outlet_id=self.input_params['outlet_id'],
+                                    node_data=dem_data,
+                                    nodata_value=self.input_params['nodata_value'])
 
         # surface water depth
         self.model_grid.add_zeros("surface_water__depth", at='node')

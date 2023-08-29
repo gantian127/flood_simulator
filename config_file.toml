@@ -1,10 +1,7 @@
-[output_params]
-output_folder = '/Users/tiga7385/Desktop/output'
-plot = true
-
 [input_params]
 grid_file = 'geer_canyon.txt'
 nodata_value = -9999
+outlet_id = -1 # set as -1 if outlet id is unavailable
 
 [run_params]
 rain_intensity = 59.2  # mm/hr
@@ -17,3 +14,6 @@ mannings_n = 0.03 # manning's roughness coefficient
 g = 9.80665  # acceleration due to gravity m/s^2
 theta = 0.8  # wighting factor
 
+[output_params]
+output_folder = '/Users/tiga7385/Desktop/output'
+plot = true
