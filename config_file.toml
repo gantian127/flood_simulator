@@ -15,5 +15,5 @@ g = 9.80665  # acceleration due to gravity m/s^2
 theta = 0.8  # wighting factor
 
 [output_params]
-output_folder = '/Users/tiga7385/Desktop/output'
+output_folder = '/Users/tiga7385/Desktop/output_geercanyon'
 plot = true

@@ -62,11 +62,13 @@ class FloodSimulator:
         self.model_grid, dem_data = read_esri_ascii(self.input_params['grid_file'], name='topographic__elevation')
 
         if self.input_params['outlet_id'] < 0:
-            self.outlet_id = self.model_grid.set_watershed_boundary_condition(
+            id_array = self.model_grid.set_watershed_boundary_condition(
                                     dem_data,
                                     nodata_value=self.input_params['nodata_value'],
                                     return_outlet_id=True)
+            self.outlet_id = id_array[0]
         else:
+            self.outlet_id = self.input_params['outlet_id']
             self.model_grid.set_watershed_boundary_condition_outlet_id(
                                     outlet_id=self.input_params['outlet_id'],
                                     node_data=dem_data,
@@ -128,7 +130,7 @@ class FloodSimulator:
                     self.model_grid.at_link["surface_water__discharge"], convert_to_volume=True
                 )
 
-                outlet_discharge.append(discharge[self.outlet_id][0])
+                outlet_discharge.append(discharge[self.outlet_id])
                 outlet_times.append(elapsed_time)
 
                 # save surface water depth at each time step
