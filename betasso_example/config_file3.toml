@@ -1,0 +1,19 @@
+[input_params]
+grid_file = 'betasso1m.txt'
+nodata_value = -9999
+outlet_id = 1849 # set as -1 if outlet id is unavailable
+
+[run_params]
+rain_intensity = 100  # mm/hr
+model_run_time = 40 # min
+storm_duration = 10 # min
+time_step = 1 # min
+steep_slopes= true
+alpha = 0.7 # time step coefficient
+mannings_n = 0.03 # manning's roughness coefficient
+g = 9.80665  # acceleration due to gravity m/s^2
+theta = 0.8  # wighting factor
+
+[output_params]
+output_folder = '/Users/tiga7385/Desktop/output_betasso1m_1849'
+plot = true
