@@ -28,6 +28,7 @@ except ModuleNotFoundError:
 from tqdm import trange
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 from landlab.io import read_esri_ascii, write_esri_ascii
 from landlab import imshow_grid
@@ -59,7 +60,8 @@ class FloodSimulator:
         """
 
         # topographic elevation and set boundary condition
-        self.model_grid, dem_data = read_esri_ascii(self.input_params['grid_file'], name='topographic__elevation')
+        self.model_grid, dem_data = read_esri_ascii(self.input_params['grid_file'],
+                                                    name='topographic__elevation')
 
         if self.input_params['outlet_id'] < 0:
             id_array = self.model_grid.set_watershed_boundary_condition(
@@ -77,6 +79,9 @@ class FloodSimulator:
         # surface water depth
         self.model_grid.add_zeros("surface_water__depth", at='node')
         self.model_grid.at_node["surface_water__depth"].fill(1e-12)
+
+        # maximum surface water depth
+        self.model_grid.add_zeros('max_surface_water__depth', at='node')
 
     def run(self):
         """
@@ -127,15 +132,22 @@ class FloodSimulator:
 
                 # get discharge result at outlet
                 discharge = overland_flow.discharge_mapper(
-                    self.model_grid.at_link["surface_water__discharge"], convert_to_volume=True
+                    self.model_grid.at_link["surface_water__discharge"],
+                    convert_to_volume=True
                 )
 
                 outlet_discharge.append(discharge[self.outlet_id])
                 outlet_times.append(elapsed_time)
 
-                # save surface water depth at each time step
-                write_esri_ascii(os.path.join(output_folder, "water_depth_{}.asc".format(time_slice)),
-                                 self.model_grid, 'surface_water__depth', clobber=True)
+            # save surface water depth at each time step
+            write_esri_ascii(os.path.join(output_folder,
+                             "water_depth_{}.asc".format(time_slice)),
+                             self.model_grid, 'surface_water__depth', clobber=True)
+
+            # save the max water depth at each time step
+            self.model_grid.at_node['max_surface_water__depth'] = np.maximum(
+                self.model_grid.at_node['max_surface_water__depth'],
+                self.model_grid.at_node['surface_water__depth'])
 
             # plot results (this is for testing purpose, it will be removed later)
             if self.output_params['plot']:
@@ -167,10 +179,17 @@ class FloodSimulator:
         # save outlet discharge
         outlet_result = pd.DataFrame(list(zip(outlet_times, outlet_discharge)),
                                      columns=['time', 'discharge'])
-        outlet_result.to_csv(
-            os.path.join(self.output_params['output_folder'] if os.path.isdir(self.output_params['output_folder']) else os.getcwd(),
-                         'outlet_discharge.csv')
+        outlet_result.to_csv(os.path.join(
+            self.output_params['output_folder']
+            if os.path.isdir(self.output_params['output_folder']) else os.getcwd(),
+            'outlet_discharge.csv')
         )
+
+        # save max surface water depth
+        max_depth = self.model_grid.at_node['max_surface_water__depth']
+        max_depth[max_depth == 1e-12] = 0
+        write_esri_ascii(os.path.join(output_folder, "max_water_depth.asc"),
+                         self.model_grid, 'max_surface_water__depth', clobber=True)
 
 
 if __name__ == "__main__":
