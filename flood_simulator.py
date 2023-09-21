@@ -174,7 +174,7 @@ class FloodSimulator:
                 ax[1].set_ylabel('north-south distance (m)')
 
                 plt.close(fig)
-                fig.savefig(os.path.join(output_folder, "flow_{}.png".format(time_slice)))
+                fig.savefig(os.path.join(output_folder, f"flow_{time_slice}.png"))
 
         # save outlet discharge
         outlet_result = pd.DataFrame(list(zip(outlet_times, outlet_discharge)),
@@ -188,8 +188,12 @@ class FloodSimulator:
         # save max surface water depth
         max_depth = self.model_grid.at_node['max_surface_water__depth']
         max_depth[max_depth == 1e-12] = 0
-        write_esri_ascii(os.path.join(output_folder, "max_water_depth.asc"),
-                         self.model_grid, 'max_surface_water__depth', clobber=True)
+        df = pd.DataFrame(max_depth, columns=['z_value'])
+        df.to_csv(os.path.join(
+            self.output_params['output_folder']
+            if os.path.isdir(self.output_params['output_folder']) else os.getcwd(),
+            'max_water_depth.csv')
+        )
 
 
 if __name__ == "__main__":
