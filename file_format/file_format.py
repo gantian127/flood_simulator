@@ -18,7 +18,7 @@ ori_dem = rasterio.open('ori_DEM.tif')
 ori_dem_1d = ori_dem.read(1).flatten()
 
 # read max depth
-max_depth_grid, max_depth_1d = read_esri_ascii('max_water_depth.asc')
+max_depth_grid, max_depth_1d = read_esri_ascii('/Users/tiga7385/Desktop/flood_simulator/output/max_water_depth.asc')
 
 # read watershed dem
 watershed_dem, watershed_dem_1d = read_esri_ascii('geer_canyon.txt')

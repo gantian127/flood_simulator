@@ -116,7 +116,7 @@ class FloodSimulator:
 
             while elapsed_time < time_slice:
                 # get adaptive time step
-                overland_flow.dt = min(overland_flow.calc_time_step(), time_slice)
+                overland_flow.dt = min(overland_flow.calc_time_step(), time_step)
 
                 # set rainfall intensity
                 if elapsed_time < storm_duration:
@@ -139,10 +139,10 @@ class FloodSimulator:
                 outlet_discharge.append(discharge[self.outlet_id])
                 outlet_times.append(elapsed_time)
 
-            # save surface water depth at each time step
-            write_esri_ascii(os.path.join(output_folder,
-                             "water_depth_{}.asc".format(time_slice)),
-                             self.model_grid, 'surface_water__depth', clobber=True)
+            # # save surface water depth at each time step
+            # write_esri_ascii(os.path.join(output_folder,
+            #                  "water_depth_{}.asc".format(time_slice)),
+            #                  self.model_grid, 'surface_water__depth', clobber=True)
 
             # save the max water depth at each time step
             self.model_grid.at_node['max_surface_water__depth'] = np.maximum(
@@ -188,12 +188,18 @@ class FloodSimulator:
         # save max surface water depth
         max_depth = self.model_grid.at_node['max_surface_water__depth']
         max_depth[max_depth == 1e-12] = 0
+
+        # as csv
         df = pd.DataFrame(max_depth, columns=['z_value'])
         df.to_csv(os.path.join(
             self.output_params['output_folder']
             if os.path.isdir(self.output_params['output_folder']) else os.getcwd(),
             'max_water_depth.csv')
         )
+
+        # as ascii
+        write_esri_ascii(os.path.join(output_folder, "max_water_depth.asc"),
+                         self.model_grid, 'max_surface_water__depth', clobber=True)
 
 
 if __name__ == "__main__":
