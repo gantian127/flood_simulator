@@ -1,10 +1,8 @@
 """This is used to analyze the model outputs"""
 
-import rasterio
 import numpy as np
 import os
 from landlab.io import read_esri_ascii
-from landlab import imshow_grid, RasterModelGrid
 import pandas as pd
 
 # change working dir
@@ -29,6 +27,7 @@ prec_rate = 59.2 /1000/3600 * 10 * 60  # mm/hr to m/s &  10min rain
 cum_rain_vol = watershed_area * prec_rate
 flow_vol = DF['cum_discharge_vol'].iloc[-1]
 flow_perc = flow_vol/cum_rain_vol * 100
+print(f'percentage of precipitation: {round(flow_perc,3)}%')
 
 # export results with min as time step
 DF['time_min'] = (DF['time']/60).astype(int)
