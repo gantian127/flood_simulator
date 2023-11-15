@@ -16,6 +16,15 @@ Code References:
 - https://github.com/gregtucker/earthscape_simulator/blob/main/src/evolve_island_world.py
 - https://github.com/landlab/landlab/blob/a5b2f68825a36529acd3c451380ec75e9f48e6e3/landlab/grid/voronoi.py#L174
 
+Code usage:
+
+method1
+from flood_simulator import FloodSimulator
+fs = FloodSimulator.from_file('config_file.toml')
+fs.run()
+
+method2
+$ python flood_simulator.py config_file.toml
 """
 
 import sys
@@ -25,6 +34,7 @@ try:
     import tomllib
 except ModuleNotFoundError:
     import tomli as tomllib
+import rasterio
 from tqdm import trange
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -83,6 +93,12 @@ class FloodSimulator:
         # maximum surface water depth
         self.model_grid.add_zeros('max_surface_water__depth', at='node')
 
+        # add rain input if rain_file exist
+        if self.input_params['rain_file'] != '':
+            rain_file = rasterio.open(self.input_params['rain_file'])
+            rain_data = rain_file.read(1).flatten()
+            self.model_grid.add_field('rain_input', rain_data, at='node')
+
     def run(self):
         """
         run overland flow simulation
@@ -91,8 +107,12 @@ class FloodSimulator:
         # set model run parameters
         model_run_time = self.run_params['model_run_time'] * 60  # duration of run (s)
         storm_duration = self.run_params['storm_duration'] * 60  # duration of rain (s)
-        time_step = self.run_params['time_step'] * 60  #
-        rainfall_intensity = self.run_params['rain_intensity'] / (1000 * 3600)  # mm/hr to m/s
+        time_step = self.run_params['time_step'] * 60
+        if 'rain_input' in self.model_grid.at_node.keys():
+            rainfall_intensity = self.model_grid.at_node['rain_input'] / (1000 * 3600)
+        else:
+            rainfall_intensity = self.input_params['rain_intensity'] / (1000 * 3600)
+
         elapsed_time = 0.0
 
         # output setup
