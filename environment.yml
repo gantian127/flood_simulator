@@ -1,0 +1,10 @@
+# this file is not tested for record only!!!
+name: flood_simulator
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - landlab=2.7.0
+  - rasterio
+  - jupyter
+  - tqdm
