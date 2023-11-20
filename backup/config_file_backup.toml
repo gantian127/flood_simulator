@@ -1,0 +1,20 @@
+[input_params]
+grid_file = 'geer_canyon.txt'
+rain_file = 'rain_input_large.tif'  # '' if no file exist, mm/hr
+rain_intensity = 59.2  # mm/hr
+nodata_value = -9999
+outlet_id = -1 # set as -1 if outlet id is unavailable
+
+[run_params]
+model_run_time = 200 # min
+storm_duration = 10 # min
+time_step = 2 # min
+steep_slopes= true
+alpha = 0.7 # time step coefficient
+mannings_n = 0.03 # manning's roughness coefficient
+g = 9.80665  # acceleration due to gravity m/s^2
+theta = 0.8  # wighting factor
+
+[output_params]
+output_folder = '/Users/tiga7385/Desktop/output_geercanyon'
+plot = true
