@@ -16,6 +16,6 @@ fs.run()
 
 ```
 Method 2: use command
-```
+```bash
 $ python flood_simulator.py config_file.toml
 ```
