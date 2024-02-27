@@ -102,6 +102,9 @@ class FloodSimulator:
         # maximum surface water depth (this field is added for result analysis)
         self.model_grid.add_zeros('max_surface_water__depth', at='node')
 
+        # maximum discharge (this field is added for result analysis)
+        self.model_grid.add_zeros('test_max_discharge', at='node')
+
         # add rain intensity TODO: allow 3D rain input
         if self.olf_info['rain_file'] != '':
             file = rasterio.open(self.olf_info['rain_file'])
@@ -206,6 +209,12 @@ class FloodSimulator:
                 outlet_discharge.append(discharge[self.outlet_id])
                 outlet_times.append(elapsed_time)
 
+                # save the max discharge at each time step (result analysis)
+                self.model_grid.at_node['test_max_discharge'] = np.maximum(
+                    self.model_grid.at_node['test_max_discharge'],
+                    discharge
+                )
+
             # # save surface water depth at each time step
             # write_esri_ascii(os.path.join(output_folder,
             #                  "water_depth_{}.asc".format(time_slice)),
@@ -281,6 +290,10 @@ class FloodSimulator:
         # as ascii
         write_esri_ascii(os.path.join(output_folder, "max_water_depth.asc"),
                          self.model_grid, 'max_surface_water__depth', clobber=True)
+
+        write_esri_ascii(os.path.join(output_folder, "max_discharge.asc"),
+                         self.model_grid, 'test_max_discharge', clobber=True
+                         )
 
 
 if __name__ == "__main__":
