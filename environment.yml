@@ -3,8 +3,8 @@ name: flood_simulator
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
-  - landlab=2.7.0
+  - python=3.13
+  - landlab=2.9.0
   - rasterio
   - jupyter
   - tqdm
